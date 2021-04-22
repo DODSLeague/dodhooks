@@ -143,7 +143,7 @@ class ExtensionConfig(object):
         '-pipe',
         '-fno-strict-aliasing',
         '-Wall',
-        '-Werror',
+      #  '-Werror',
         '-Wno-unused',
         '-Wno-switch',
         '-Wno-array-bounds',
@@ -151,7 +151,8 @@ class ExtensionConfig(object):
         '-m32',
       ]
       cxx.cxxflags += [
-        '-std=c++11',
+	'-fpermissive',      
+#  '-std=c++11',
       ]
 
       have_gcc = cxx.vendor == 'gcc'
@@ -395,8 +396,9 @@ class ExtensionConfig(object):
       os.path.join(context.currentSourcePath, 'sdk'),
       os.path.join(self.sm_root, 'public'),
       os.path.join(self.sm_root, 'public', 'extensions'),
-      os.path.join(self.sm_root, 'public', 'sourcepawn'),
-      os.path.join(self.sm_root, 'public', 'amtl', 'include'),
+      os.path.join(self.sm_root, 'sourcepawn', 'include'),
+      os.path.join(self.sm_root, 'public', 'amtl', 'amtl'),
+      os.path.join(self.sm_root, 'public', 'amtl'),
     ]
     return compiler
 

@@ -8,6 +8,15 @@ sourceFiles = [
   'extension.cpp',
   'natives.cpp',
   'vglobals.cpp',
+  '../sourcemod/public/smsdk_ext.cpp',
+  '../sourcemod/public/CDetour/detours.cpp',
+  '../sourcemod/public/asm/asm.c',
+  '../sourcemod/public/libudis86/decode.c',
+  '../sourcemod/public/libudis86/itab.c',
+  '../sourcemod/public/libudis86/syn-att.c',
+  '../sourcemod/public/libudis86/syn-intel.c',
+  '../sourcemod/public/libudis86/syn.c',
+  '../sourcemod/public/libudis86/udis86.c',
 ]
 
 ###############
@@ -16,16 +25,17 @@ sourceFiles = [
 
 project = Extension.HL2Project(builder, projectName + '.ext')
 
-if os.path.isfile(os.path.join(builder.currentSourcePath, 'sdk', 'smsdk_ext.cpp')):
+#if os.path.isfile(os.path.join(builder.currentSourcePath, 'sdk', 'smsdk_ext.cpp')):
   # Use the copy included in the project
-  project.sources += [os.path.join('sdk', 'smsdk_ext.cpp')]
-else:
+
+#  project.sources += [os.path.join('sdk', 'smsdk_ext.cpp')]
+#else:
   # Use the copy included with SM 1.6 and newer
-  project.sources += [os.path.join(Extension.sm_root, 'public', 'smsdk_ext.cpp')]
+#  project.sources += [os.path.join(Extension.sm_root, 'public', 'smsdk_ext.cpp')]
 
 # CDetour
-project.sources += [os.path.join(Extension.sm_root, 'public', 'CDetour', 'detours.cpp')]
-project.sources += [os.path.join(Extension.sm_root, 'public', 'asm', 'asm.c')]
+#project.sources += [os.path.join(Extension.sm_root, 'public', 'CDetour', 'detours.cpp')]
+#project.sources += [os.path.join(Extension.sm_root, 'public', 'asm', 'asm.c')]
 
 project.sources += sourceFiles
   
