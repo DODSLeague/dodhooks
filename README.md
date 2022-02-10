@@ -1,7 +1,7 @@
 # dodhooks
 SourceMod extension with Detours &amp; Natives for Day of Defeat: Source
 
-Original written and maintained by Joakim Andersson "Andersso". Fixed by [ChesterSmitty] (https://github.com/ChesterSmitty/dodhooks), ci template based on the work of [Dasister] (https://github.com/Dasister/dodhooks).
+Original written and maintained by Joakim Andersson "Andersso". Fixed by [ChesterSmitty](https://github.com/ChesterSmitty/dodhooks), ci template based on the work of [Dasister](https://github.com/Dasister/dodhooks).
 
 > :warning: currently only the linux build works, if you can fix the windows build, let me know! :)
 
