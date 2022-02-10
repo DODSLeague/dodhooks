@@ -1,0 +1,164 @@
+name: build_dodhooks
+
+on:
+  push:
+    branches: [ master ]
+    tags: [ v**]
+    paths:
+      - '**'
+      - '!README.md'
+      - '!LICENSE'
+      - '!.github/workflows/build-dodhooks.yml'
+  pull_request:
+    branches: [ master ]
+    tags: [ v**]
+    paths:
+      - '**'
+      - '!README.md'
+      - '!LICENSE'
+      - '!.github/workflows/build-dodhooks.yml'
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        # os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest]
+        # os: [windows-latest]
+        include:
+          # - os: windows-latest
+          #   os_short: win
+          #   compiler_cc: msvc
+          - os: ubuntu-latest
+            os_short: linux
+            compiler_cc: clang
+            compiler_cxx: clang++
+      fail-fast: false
+    runs-on: ${{ matrix.os }}
+    env:
+      SDKS: '["dods"]'
+      ARCH: x86,x86_64
+      SMVERSION: '1.10'
+      MMVERSION: '1.10'
+
+
+    steps:
+    # checkout everything
+      - uses: actions/checkout@v2
+        name: get dodhooks
+        with:
+          path: 'dodhooks'
+      - uses: actions/checkout@v2
+        name: get ambuild
+        with:
+          repository: 'alliedmodders/ambuild'
+          path: 'ambuild'     
+      - uses: actions/checkout@v2
+        name: get souremod
+        with:
+          repository: 'alliedmodders/sourcemod'
+          path: 'sourcemod'
+          ref: "${{ env.SMVERSION }}-dev"
+          submodules: 'recursive'
+
+      # Setup Python for AMBuild
+      - uses: actions/setup-python@v2
+        name: Setup Python 3.8
+        with:
+          python-version: 3.8
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip setuptools wheel
+
+      - name: Install ambuild
+        shell: bash
+        run: pip install ./ambuild
+
+      - name: Install linux sm dependencies
+        shell: bash
+        if: startsWith(runner.os, 'Linux')
+        run: ./sourcemod/tools/checkout-deps.sh -s ${{ join(fromJSON(env.SDKS)) }}
+      - name: Install windows sm dependencies
+        shell: pwsh
+        if: startsWith(runner.os, 'Windows')
+        run: ./sourcemod/tools/checkout-deps.ps1 -SDKs ${{ join(fromJSON(env.SDKS)) }}      
+      - name: Install Linux dependencies
+        if: startsWith(runner.os, 'Linux')
+        run: |
+          sudo dpkg --add-architecture i386
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            gcc-multilib g++-multilib libstdc++6 lib32stdc++6 \
+            libc6-dev libc6-dev-i386 linux-libc-dev \
+            linux-libc-dev:i386 lib32z1-dev ${{ matrix.compiler_cc }}     
+      - uses: ilammy/msvc-dev-cmd@v1
+        name: Install windows dependencies
+        if: startsWith(runner.os, 'Windows')
+      - name: Select clang compiler
+        if: startsWith(runner.os, 'Linux')
+        run: |
+          echo "CC=${{ matrix.compiler_cc }}" >> $GITHUB_ENV
+          echo "CXX=${{ matrix.compiler_cxx }}" >> $GITHUB_ENV
+          ${{ matrix.compiler_cc }} --version
+          ${{ matrix.compiler_cxx }} --version
+      - name: create dodhooks build folder
+        shell: bash
+        working-directory: ./dodhooks
+        run: mkdir build 
+      - name: comfigure dodhooks build 
+        shell: bash
+        working-directory: ./dodhooks/build
+        run: python3 ../configure.py --hl2sdk-root=../../ --sm-path=../../sourcemod/ --mms-path=../../mmsource-$MMVERSION/
+      - name: run dodhooks build 
+        shell: bash
+        working-directory: ./dodhooks/build
+        run: ambuild
+      - name: list build
+        shell: bash
+        working-directory: ./dodhooks/build
+        run: ls
+      - name: upload artifact web client
+        uses: actions/upload-artifact@v2
+        with:
+          name: "${{ matrix.os }}"
+          path: ./dodhooks/build
+          retention-days: 1
+
+  release:
+    name: Release
+    if: ${{ startsWith(github.ref, 'refs/tags/v') }}
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - name: get artifacts
+      uses: actions/download-artifact@v2
+    - name: Display structure of downloaded files
+      run: ls -R
+    - uses: actions/checkout@v2
+      name: get dodhooks
+      with:
+        path: 'dodhooks'
+    - name: Display structure of downloaded files
+      run: ls -R
+    - name: copy release files
+      run: mkdir -p release/addons/sourcemod && cp -rf dodhooks/sourcemod/* release/addons/sourcemod/ &&  cp -rf ubuntu-latest/package/addons/sourcemod/* release/addons/sourcemod/
+    - name: make release file
+      run: zip -r dodhooks.zip release/addons/
+    - name: Display structure of downloaded files
+      run: ls -R  
+    - name: Release
+      if: ${{ !(contains(github.ref, '-beta')) }}
+      uses: softprops/action-gh-release@v1
+      with:
+        files: dodhooks.zip
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}     
+    - name: pre Release
+      if: ${{ (contains(github.ref, '-beta')) }}
+      uses: softprops/action-gh-release@v1
+      with:
+        prerelease: true
+        files: dodhooks.zip 
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
