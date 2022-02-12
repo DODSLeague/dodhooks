@@ -416,8 +416,8 @@ cell_t Native_ResetScoresPlayer(IPluginContext *pContext, const cell_t *Params)
 
 cell_t Native_ResetControlPoints(IPluginContext *pContext, const cell_t *Params)
 {
-	edict_t *pEdict = g_pEngine->PEntityOfEntIndex(Params[1]);
-	CBaseEntity *pEntity = g_pGameEnts->EdictToBaseEntity(pEdict);
+	// edict_t *pEdict = g_pEngine->PEntityOfEntIndex(Params[1]);
+	// CBaseEntity *pEntity = g_pGameEnts->EdictToBaseEntity(pEdict);
 
 	// // todo!
 	// if (!pEntity || strcmp(pEdict->GetClassName(), "dod_capture_area") != 0)
@@ -434,7 +434,8 @@ cell_t Native_ResetControlPoints(IPluginContext *pContext, const cell_t *Params)
 			pWrapper = g_pBinTools->CreateCall(pAddress, CallConv_ThisCall, NULL, NULL, 0));
 	}
 
-	pWrapper->Execute(&pEntity, NULL);
+	// pWrapper->Execute(&pEntity, NULL);
+	pWrapper->Execute(NULL, NULL);
 
 	return true;
 }
