@@ -258,7 +258,7 @@ native RespawnPlayer(client, bool:classCheck = true);
 native ResetScoresPlayer(client);
 
 /**
-* @brief ResetScores from a player.
+* @brief Resets control points
 *
 * @param cpIndex				Control point index.
 * @noreturn
