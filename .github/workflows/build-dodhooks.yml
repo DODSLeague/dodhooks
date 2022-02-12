@@ -2,7 +2,9 @@ name: build_dodhooks
 
 on:
   push:
-    branches: [ master ]
+    branches: 
+      - master
+      - beta
     tags: [ v**]
     paths:
       - '**'
@@ -10,7 +12,9 @@ on:
       - '!LICENSE'
       - '!.github/workflows/build-dodhooks.yml'
   pull_request:
-    branches: [ master ]
+    branches: 
+      - master
+      - beta
     tags: [ v**]
     paths:
       - '**'

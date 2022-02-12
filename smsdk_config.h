@@ -40,9 +40,9 @@
 /* Basic information exposed publicly */
 #define SMEXT_CONF_NAME			"DoD Hooks"
 #define SMEXT_CONF_DESCRIPTION	"Detours & Natives for DoD:S"
-#define SMEXT_CONF_VERSION		"1.4.1-2015b"
-#define SMEXT_CONF_AUTHOR		"Andersso"
-#define SMEXT_CONF_URL			"http://www.dodsplugins.com/"
+#define SMEXT_CONF_VERSION		"1.5.0-beta"
+#define SMEXT_CONF_AUTHOR		"DODSLeague"
+#define SMEXT_CONF_URL			"http://www.dodsleague.eu/"
 #define SMEXT_CONF_LOGTAG		"DODH"
 #define SMEXT_CONF_LICENSE		"GPL"
 #define SMEXT_CONF_DATESTRING	__DATE__
