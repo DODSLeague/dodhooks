@@ -263,7 +263,7 @@ native ResetScoresPlayer(client);
 * @param cpIndex				Control point index.
 * @noreturn
 */
-native ResetControlPoints(cpIndex);
+native ResetControlPoints();
 
 /**
 * @brief Makes the specified team to win the round.
