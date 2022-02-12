@@ -258,6 +258,14 @@ native RespawnPlayer(client, bool:classCheck = true);
 native ResetScoresPlayer(client);
 
 /**
+* @brief ResetScores from a player.
+*
+* @param cpIndex				Control point index.
+* @noreturn
+*/
+native ResetControlPoints(cpIndex);
+
+/**
 * @brief Makes the specified team to win the round.
 *
 * @param index					Team index.
