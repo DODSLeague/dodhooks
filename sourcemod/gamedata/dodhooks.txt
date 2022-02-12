@@ -45,6 +45,12 @@
 				"windows"	"\x55\x8B\xEC\x8B\x0D\x2A\x2A\x2A\x2A\x81\xEC\x80\x00\x00\x00"
 				"linux"		"@_ZN13CDODGameRules14SetWinningTeamEi"
 			}
+			"ResetScores"
+			{
+				"library"	"server"
+				"windows"	"RIP"
+				"linux"		"_ZN10CDODPlayer11ResetScoresEv"
+			}
 			"DODRespawn"
 			{
 				"library"	"server"

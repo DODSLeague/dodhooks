@@ -15,6 +15,7 @@ cell_t Native_ResumeTimer				(IPluginContext *pContext, const cell_t *Params);
 cell_t Native_SetTimeRemaining			(IPluginContext *pContext, const cell_t *Params);
 cell_t Native_GetTimeRemaining			(IPluginContext *pContext, const cell_t *Params);
 cell_t Native_RespawnPlayer				(IPluginContext *pContext, const cell_t *Params);
+cell_t Native_ResetScoresPlayer			(IPluginContext *pContext, const cell_t *Params);
 cell_t Native_AddWaveTime				(IPluginContext *pContext, const cell_t *Params);
 cell_t Native_SetWinningTeam			(IPluginContext *pContext, const cell_t *Params);
 cell_t Native_SetRoundState				(IPluginContext *pContext, const cell_t *Params);
@@ -57,6 +58,7 @@ const sp_nativeinfo_t g_Natives[] =
     {"SetTimeRemaining",			Native_SetTimeRemaining},
     {"GetTimeRemaining",			Native_GetTimeRemaining},
 	{"RespawnPlayer",				Native_RespawnPlayer},
+	{"ResetScoresPlayer",			Native_ResetScoresPlayer},
 	{"AddWaveTime",					Native_AddWaveTime},
 	{"SetWinningTeam",				Native_SetWinningTeam},
 	{"SetRoundState",				Native_SetRoundState},

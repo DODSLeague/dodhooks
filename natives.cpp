@@ -389,6 +389,30 @@ cell_t Native_RespawnPlayer(IPluginContext *pContext, const cell_t *Params)
 	return true;
 }
 
+cell_t Native_ResetScoresPlayer(IPluginContext *pContext, const cell_t *Params)
+{
+	edict_t *pEdict = g_pEngine->PEntityOfEntIndex(Params[1]);
+	CBaseEntity *pEntity = g_pGameEnts->EdictToBaseEntity(pEdict);
+
+	if (!pEntity || strcmp(pEdict->GetClassName(), "player") != 0)
+	{
+		return pContext->ThrowNativeError("Client index %d is not valid", Params[1]);
+	}
+	
+	
+	static ICallWrapper *pWrapper = NULL;
+
+	if (!pWrapper)
+	{
+		REGISTER_NATIVE_ADDR("ResetScores",
+			pWrapper = g_pBinTools->CreateCall(pAddress, CallConv_ThisCall, NULL, NULL, 0));
+	}
+
+	pWrapper->Execute(&pEntity, NULL);
+
+	return true;
+}
+
 cell_t Native_AddWaveTime(IPluginContext *pContext, const cell_t *Params)
 {
 	if (Params[2] < Team_Spectators || Params[2] > Team_Axis)

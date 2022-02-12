@@ -10,6 +10,7 @@ CDetour *g_pDetVoiceCommand			= NULL;
 CDetour *g_pDetJoinClass			= NULL;
 CDetour *g_pDetPopHelmet			= NULL;
 CDetour *g_pDetRespawn				= NULL;
+CDetour *g_pDetResetScores			= NULL;
 CDetour *g_pDetAddWaveTime			= NULL;
 CDetour *g_pDetSetWinningTeam		= NULL;
 CDetour *g_pDetRoundState			= NULL;
@@ -20,6 +21,7 @@ IForward *g_pFwdVoiceCommand		= NULL;
 IForward *g_pFwdJoinClass			= NULL;
 IForward *g_pFwdPopHelmet			= NULL;
 IForward *g_pFwdRespawn				= NULL;
+IForward *g_pFwdResetScores			= NULL;
 IForward *g_pFwdAddWaveTime			= NULL;
 IForward *g_pFwdSetWinningTeam		= NULL;
 IForward *g_pFwdRoundState			= NULL;
@@ -114,6 +116,20 @@ DETOUR_DECL_MEMBER2(PopHelmet, void, Vector, vecVelocity, Vector, vecOrigin)
 	}
 
 	DETOUR_MEMBER_CALL(PopHelmet)(vecVelocity, vecOrigin);
+}
+
+DETOUR_DECL_MEMBER0(ResetScores, void)
+{
+	cell_t Result = Pl_Continue;
+	g_pFwdResetScores->PushCell(g_pEngine->IndexOfEdict(g_pGameEnts->BaseEntityToEdict((CBaseEntity *)this)));
+	g_pFwdResetScores->Execute(&Result);
+
+	if (Result >= Pl_Handled)
+	{
+		return;
+	}
+
+	DETOUR_MEMBER_CALL(ResetScores)();
 }
 
 DETOUR_DECL_MEMBER0(Respawn, void)
@@ -246,6 +262,7 @@ bool CDODHooks::SDK_OnLoad(char *error, size_t maxlength, bool late)
 	CREATE_DETOUR(g_pDetJoinClass,			JoinClass,			"JoinClass");
 	CREATE_DETOUR(g_pDetPopHelmet,			PopHelmet,			"PopHelmet");
 	CREATE_DETOUR(g_pDetRespawn,			Respawn,			"DODRespawn");
+	CREATE_DETOUR(g_pDetResetScores,		ResetScores,		"ResetScores");
 	CREATE_DETOUR(g_pDetAddWaveTime,		AddWaveTime,		"AddWaveTime");
 	CREATE_DETOUR(g_pDetSetWinningTeam,		SetWinningTeam,		"SetWinningTeam");
 	CREATE_DETOUR(g_pDetRoundState,			RoundState,			"RoundState");
@@ -267,6 +284,7 @@ void CDODHooks::SDK_OnUnload()
 	g_pForwards->ReleaseForward(g_pFwdJoinClass);
 	g_pForwards->ReleaseForward(g_pFwdPopHelmet);
 	g_pForwards->ReleaseForward(g_pFwdRespawn);
+	g_pForwards->ReleaseForward(g_pFwdResetScores);
 	g_pForwards->ReleaseForward(g_pFwdAddWaveTime);
 	g_pForwards->ReleaseForward(g_pFwdSetWinningTeam);
 	g_pForwards->ReleaseForward(g_pFwdRoundState);
@@ -277,6 +295,7 @@ void CDODHooks::SDK_OnUnload()
 	REMOVE_DETOUR(g_pDetJoinClass);
 	REMOVE_DETOUR(g_pDetPopHelmet);
 	REMOVE_DETOUR(g_pDetRespawn);
+	REMOVE_DETOUR(g_pDetResetScores);
 	REMOVE_DETOUR(g_pDetAddWaveTime);
 	REMOVE_DETOUR(g_pDetSetWinningTeam);
 	REMOVE_DETOUR(g_pDetRoundState);
@@ -321,6 +340,7 @@ void CDODHooks::SDK_OnAllLoaded()
 	g_pFwdJoinClass			= g_pForwards->CreateForward("OnJoinClass",				ET_Event, 2, NULL, Param_Cell, Param_CellByRef);
 	g_pFwdPopHelmet			= g_pForwards->CreateForward("OnPopHelmet",				ET_Event, 3, NULL, Param_Cell, Param_Array, Param_Array);
 	g_pFwdRespawn			= g_pForwards->CreateForward("OnPlayerRespawn",			ET_Event, 1, NULL, Param_Cell);
+	g_pFwdResetScores			= g_pForwards->CreateForward("OnPlayerResetScores",		ET_Event, 1, NULL, Param_Cell);
 	g_pFwdAddWaveTime		= g_pForwards->CreateForward("OnAddWaveTime",			ET_Event, 2, NULL, Param_Cell, Param_FloatByRef);
 	g_pFwdSetWinningTeam	= g_pForwards->CreateForward("OnSetWinningTeam",		ET_Event, 1, NULL, Param_Cell);
 	g_pFwdRoundState		= g_pForwards->CreateForward("OnEnterRoundState",		ET_Event, 1, NULL, Param_CellByRef);

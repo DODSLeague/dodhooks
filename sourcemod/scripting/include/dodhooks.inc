@@ -250,6 +250,14 @@ native Float:GetTimeRemaining(roundTimer);
 native RespawnPlayer(client, bool:classCheck = true);
 
 /**
+* @brief ResetScores from a player.
+*
+* @param client					Client index.
+* @noreturn
+*/
+native ResetScoresPlayer(client);
+
+/**
 * @brief Makes the specified team to win the round.
 *
 * @param index					Team index.
@@ -409,4 +417,4 @@ public __ext_dodhooks_SetNTVOptional()
 	MarkNativeAsOptional("SetRoundState");
 	MarkNativeAsOptional("SetBombTargetState");
 }
-#endif
+#endif
